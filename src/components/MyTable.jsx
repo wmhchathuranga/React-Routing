@@ -1,33 +1,49 @@
+import { useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import TableHeader from './TableHeader';
-import TableData from './TableData';
 import TableRow from './TableRow';
 
 function BasicExample(props) {
+
+    const [rows, setRows] = useState(props.data);
+
     return (
         <Table striped bordered hover>
             <thead>
                 <tr>
-                    {props.data.length ? (
-                        Object.entries(props.data[0]).map(([key, value]) => (
+                    {rows.length ? (
+                        Object.entries(rows[0]).map(([key, value]) => (
                             <TableHeader key={key} data={key} />
                         ))
                     ) : (
-                        Object.entries(props.data).map(([key, value]) => (
-                            <TableHeader key={key} data={key} />
-                        ))
+                        rows.length === 0 ? (
+                            <th>Warning!</th>
+                        ) : (
+
+                            Object.entries(rows).map(([key, value]) => (
+                                <TableHeader key={key} data={key} />
+                            ))
+                        )
                     )}
-                    <th> Action </th>
+                    {rows.length !== 0 && <th> Action </th>}
                 </tr>
             </thead>
             <tbody>
 
-                {props.data.length ? (
-                    props.data.map((post) => (
-                        <TableRow key={post.id} data={post} />
+                {rows.length ? (
+                    rows.map((post) => (
+                        <TableRow key={post.id} data={post} row_option={setRows} unique_id={post.id} rows={rows} />
                     ))
                 ) : (
-                    <TableRow data={props.data} />
+                    rows.length === 0 ? (
+                        <tr>
+                            <td>No Posts Available</td>
+                        </tr>
+
+                    )
+                        : (
+                            <TableRow data={rows} row_option={setRows} unique_id={rows.id} rows={rows} />
+                        )
                 )}
 
             </tbody>
